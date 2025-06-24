@@ -1,0 +1,201 @@
+using System;
+using System.Collections.Generic;
+
+class Competidor
+{
+    public string Nome { get; set; }
+    public int Idade { get; set; }
+    public string Modalidade { get; set; }
+
+    public Competidor(string nome, int idade, string modalidade)
+    {
+        Nome = nome;
+        Idade = idade;
+        Modalidade = modalidade;
+    }
+}
+
+class Competicao
+{
+    public string Nome { get; set; }
+    private List<Competidor> competidores = new List<Competidor>();
+
+    public Competicao(string nome)
+    {
+        Nome = nome;
+    }
+
+    public void AdicionarCompetidor(Competidor competidor)
+    {
+        competidores.Add(competidor);
+    }
+
+    public List<Competidor> GetCompetidores()
+    {
+        return new List<Competidor>(competidores);
+    }
+
+    public bool EditarCompetidor(string nome, string novoNome, int novaIdade, string novaModalidade)
+    {
+        var c = competidores.Find(x => x.Nome.Equals(nome, StringComparison.OrdinalIgnoreCase));
+        if (c == null) return false;
+        c.Nome = novoNome;
+        c.Idade = novaIdade;
+        c.Modalidade = novaModalidade;
+        return true;
+    }
+
+    public bool RemoverCompetidor(string nome)
+    {
+        var c = competidores.Find(x => x.Nome.Equals(nome, StringComparison.OrdinalIgnoreCase));
+        if (c == null) return false;
+        competidores.Remove(c);
+        return true;
+    }
+}
+
+class Program
+{
+    static Competicao competicao;
+
+    static void Main()
+    {
+        while (true)
+        {
+            Console.WriteLine("\nMenu:");
+            Console.WriteLine("1 - Cadastrar nova competição");
+            Console.WriteLine("2 - Adicionar competidor");
+            Console.WriteLine("3 - Listar competidores");
+            Console.WriteLine("4 - Editar competidor");
+            Console.WriteLine("5 - Remover competidor");
+            Console.WriteLine("6 - Sair");
+            Console.Write("Opção: ");
+            string opcao = Console.ReadLine();
+
+            switch (opcao)
+            {
+                case "1":
+                    CadastrarCompeticao();
+                    break;
+                case "2":
+                    AdicionarCompetidor();
+                    break;
+                case "3":
+                    ListarCompetidores();
+                    break;
+                case "4":
+                    EditarCompetidor();
+                    break;
+                case "5":
+                    RemoverCompetidor();
+                    break;
+                case "6":
+                    return;
+                default:
+                    Console.WriteLine("Opção inválida.");
+                    break;
+            }
+        }
+    }
+
+    static void CadastrarCompeticao()
+    {
+        Console.Write("Nome da competição: ");
+        string nome = Console.ReadLine();
+        competicao = new Competicao(nome);
+        Console.WriteLine("Competição cadastrada.");
+    }
+
+    static void AdicionarCompetidor()
+    {
+        if (competicao == null)
+        {
+            Console.WriteLine("Cadastre uma competição primeiro.");
+            return;
+        }
+        Console.Write("Nome do competidor: ");
+        string nome = Console.ReadLine();
+        Console.Write("Idade: ");
+        if (!int.TryParse(Console.ReadLine(), out int idade))
+        {
+            Console.WriteLine("Idade inválida.");
+            return;
+        }
+        Console.Write("Modalidade: ");
+        string modalidade = Console.ReadLine();
+
+        competicao.AdicionarCompetidor(new Competidor(nome, idade, modalidade));
+        Console.WriteLine("Competidor adicionado.");
+    }
+
+    static void ListarCompetidores()
+    {
+        if (competicao == null)
+        {
+            Console.WriteLine("Nenhuma competição cadastrada.");
+            return;
+        }
+
+        var lista = competicao.GetCompetidores();
+        if (lista.Count == 0)
+        {
+            Console.WriteLine("Nenhum competidor cadastrado.");
+            return;
+        }
+
+        Console.WriteLine($"\nCompetidores da competição {competicao.Nome}:");
+        foreach (var c in lista)
+        {
+            Console.WriteLine($"Nome: {c.Nome}, Idade: {c.Idade}, Modalidade: {c.Modalidade}");
+        }
+    }
+
+    static void EditarCompetidor()
+    {
+        if (competicao == null)
+        {
+            Console.WriteLine("Cadastre uma competição primeiro.");
+            return;
+        }
+
+        Console.Write("Nome do competidor a editar: ");
+        string nome = Console.ReadLine();
+
+        Console.Write("Novo nome: ");
+        string novoNome = Console.ReadLine();
+
+        Console.Write("Nova idade: ");
+        if (!int.TryParse(Console.ReadLine(), out int novaIdade))
+        {
+            Console.WriteLine("Idade inválida.");
+            return;
+        }
+
+        Console.Write("Nova modalidade: ");
+        string novaModalidade = Console.ReadLine();
+
+        if (competicao.EditarCompetidor(nome, novoNome, novaIdade, novaModalidade))
+            Console.WriteLine("Competidor editado.");
+        else
+            Console.WriteLine("Competidor não encontrado.");
+    }
+
+    static void RemoverCompetidor()
+    {
+        if (competicao == null)
+        {
+            Console.WriteLine("Cadastre uma competição primeiro.");
+            return;
+        }
+
+        Console.Write("Nome do competidor a remover: ");
+        string nome = Console.ReadLine();
+
+        if (competicao.RemoverCompetidor(nome))
+            Console.WriteLine("Competidor removido.");
+        else
+            Console.WriteLine("Competidor não encontrado.");
+    }
+}
+
+
