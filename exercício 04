@@ -1,0 +1,34 @@
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        while (true)
+        {
+            try
+            {
+                Console.Write("Digite o primeiro número (ou 'sair' para encerrar): ");
+                string entrada1 = Console.ReadLine();
+                if (entrada1.Trim().ToLower() == "sair") break;
+                int num1 = int.Parse(entrada1);
+
+                Console.Write("Digite o segundo número (ou 'sair' para encerrar): ");
+                string entrada2 = Console.ReadLine();
+                if (entrada2.Trim().ToLower() == "sair") break;
+                int num2 = int.Parse(entrada2);
+
+                int resultado = num1 / num2;
+                Console.WriteLine($"Resultado: {resultado}");
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Erro: Valor inválido. Digite um número inteiro.");
+            }
+            catch (DivideByZeroException)
+            {
+                Console.WriteLine("Erro: Não é possível dividir por zero.");
+            }
+        }
+    }
+}
